@@ -201,4 +201,37 @@ class UserController extends Controller
 
         return response()->json(['verified' => $verified]);
     }
+    public function updateUser(Request $request, User $user)
+    {
+       $validated = $request->validate([
+            'name'                  => 'sometimes|string|max:255',
+            'email'                 => 'sometimes|string|email|max:255|unique:users,email,' . $user->id,
+            'password'              => 'sometimes|string|min:8',
+            'password_confirmation' => 'sometimes|string|min:8',
+            'role'                  => 'sometimes|string|in:Rédacteur,Admin',
+            'is_active'             => 'sometimes|boolean',
+        ]);
+
+        if (
+            !empty($validated['password']) &&
+            $validated['password'] !== ($validated['password_confirmation'] ?? null)
+        ) {
+            return response()->json([
+                'message' => 'Les mots de passe ne correspondent pas.',
+            ], 422);
+        }
+
+        if (isset($validated['password'])) {
+            $validated['password'] = Hash::make($validated['password']);
+        }
+
+        unset($validated['password_confirmation']);
+        $validated['updated_at'] = now()->toISOString();
+
+        $user->update($validated);
+        Log::info('Utilisateur mis à jour avec succès:', $user->toArray());
+
+        return response()->json($user);
+    }
+    
 }

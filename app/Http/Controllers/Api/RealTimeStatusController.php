@@ -49,6 +49,31 @@ class RealTimeStatusController extends Controller
 
         return response()->json($allData, 200);
     }
+    public function status($id)
+{
+    $response = Http::withoutVerifying()
+        ->withHeaders([
+            'apikey'        => $this->supabaseKey,
+            'Authorization' => 'Bearer ' . $this->supabaseKey,
+        ])->get("{$this->supabaseUrl}/rest/v1/b2b_autopro_envoimasse_statentr", [
+            'select' => '*',        // ✅ select séparé
+            'id'     => 'eq.' . $id // ✅ filtre correct
+        ]);
+
+    if ($response->failed()) {
+        return response()->json(['error' => $response->body()], 400);
+    }
+
+    $data = $response->json();
+
+    // Vérifier si le résultat est vide
+    if (empty($data)) {
+        return response()->json(['error' => 'Aucun enregistrement trouvé'], 404);
+    }
+
+    return response()->json($data[0], 200); // ✅ retourne le premier élément
+}
+
 
     // POST — insérer une nouvelle ligne
     public function store(Request $request)
@@ -84,6 +109,7 @@ class RealTimeStatusController extends Controller
             'data' => $response->json(),
         ], 201);
     }
+    
 
     // PATCH — mettre à jour une ligne existante
     public function update(Request $request, $id)

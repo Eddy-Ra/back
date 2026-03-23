@@ -84,6 +84,7 @@ Route::delete('/envoiemassehisto/{id}', [B2bAutoproEnvoiemasseHistoController::c
 
 // status en temps réel
 Route::get('/realtimestatus', [RealTimeStatusController::class, 'index']);
+Route::get('/status/{id}', [RealTimeStatusController::class, 'status']);
 Route::post('/realtimestatus', [RealTimeStatusController::class, 'store']);
 Route::patch('/realtimestatus/{id}', [RealTimeStatusController::class, 'update']);
 Route::delete('/realtimestatus/{id}', [RealTimeStatusController::class, 'destroy']);
@@ -129,6 +130,10 @@ Route::delete('/prospects/{id}', [ProspectController::class, 'destroy']);
 Route::apiResource('/users', UserController::class);
 Route::post('/users/{id}/verify-password', [UserController::class, 'verifyPassword']);
 Route::post('/users', [UserController::class,'store']);
+Route::patch('/user/{id}', [UserController::class, 'updateUser']);
+
+
+
 
 // Settings
 Route::get('/settings', [SettingController::class, 'index']);
@@ -155,3 +160,4 @@ Route::apiResource('reponses', ResponseController::class)->only(['index', 'show'
 
 //contact societe
 Route::get('/societe', [SocieteController::class, 'index']);//recuperation
+
