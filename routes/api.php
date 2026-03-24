@@ -43,7 +43,7 @@ Route::get('/health', function () {
 });
 
 // User Auth route
-Route::get('/user',[UserController::class,'alluser']);
+
 
 // Categories
 Route::get('/categories', [CategoryController::class, 'index']);
@@ -128,9 +128,11 @@ Route::delete('/prospects/{id}', [ProspectController::class, 'destroy']);
 
 // Users (apiResource + verify-password)
 Route::apiResource('/users', UserController::class);
-Route::post('/users/{id}/verify-password', [UserController::class, 'verifyPassword']);
-Route::post('/users', [UserController::class,'store']);
-Route::patch('/user/{id}', [UserController::class, 'updateUser']);
+Route::get('/user',[UserController::class,'alluser']);
+Route::post('/user/{id}/verify-password', [UserController::class, 'verifyPassword']);
+Route::post('/user', [UserController::class,'store']);
+Route::patch('/user/{id}', [UserController::class, 'updateActiveStatus']);
+Route::delete('/user/{id}', [UserController::class, 'destroy']);
 
 
 
