@@ -85,7 +85,7 @@ class UserController extends Controller
                 'email'             => $validated['email'],
                 'password'          => $hashedPassword,
                 'role'              => $validated['role'],
-                'is_active'         => true,
+                'is_active'         => false,
                 'email_verified_at' => now()->toISOString(),
                 'last_login_at'     => now()->toISOString(),
                 'created_at'        => now()->toISOString(),
