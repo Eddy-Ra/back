@@ -32,6 +32,7 @@ use App\Http\Controllers\Api\MailsReponsesStatusController;
 use App\Http\Controllers\Api\RelancePromptController;
 use App\Http\Controllers\Api\RelanceMailsgeneresController;
 use App\Http\Controllers\Api\B2b_response_mailController;
+use App\Http\Controllers\Api\b2b_mailsdereponse_autoprospectController;
 use App\Http\Controllers\Api\SocieteController;
 // Test/Health
 Route::get('/test', function () {
@@ -118,6 +119,12 @@ Route::get('/b2b_mailsreponses', [B2b_response_mailController::class, 'index']);
 Route::post('/b2b_mailsreponses', [B2b_response_mailController::class, 'store']);
 Route::patch('/b2b_mailsreponses/{id}', [B2b_response_mailController::class, 'update']);
 Route::delete('/b2b_mailsreponses/{id}', [B2b_response_mailController::class, 'destroy']);
+
+// B2b response mail autoprospect
+Route::get('/b2b_mailsdereponse_autoprospect', [b2b_mailsdereponse_autoprospectController::class, 'index']);
+Route::post('/b2b_mailsdereponse_autoprospect', [b2b_mailsdereponse_autoprospectController::class, 'store']);
+Route::patch('/b2b_mailsdereponse_autoprospect/{id}', [b2b_mailsdereponse_autoprospectController::class, 'update']);
+Route::delete('/b2b_mailsdereponse_autoprospect/{id}', [b2b_mailsdereponse_autoprospectController::class, 'destroy']);
 
 // Prospects
 Route::get('/prospects', [ProspectController::class, 'index']);

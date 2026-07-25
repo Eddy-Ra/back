@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Validator;
 
-class B2b_response_mailController extends Controller
+class b2b_mailsdereponse_autoprospectController extends Controller
 {
     protected $supabaseUrl;
     protected $supabaseKey;
@@ -28,7 +28,7 @@ class B2b_response_mailController extends Controller
             ->withHeaders([
             'apikey' => $this->supabaseKey,
             'Authorization' => 'Bearer ' . $this->supabaseKey,
-        ])->get("{$this->supabaseUrl}/rest/v1/b2b_mailsreponses", [
+        ])->get("{$this->supabaseUrl}/rest/v1/b2b_mailsdereponse_autoprospect", [
             'select' => '*',
              'order' => 'created_at.desc',
         ]);
@@ -46,19 +46,16 @@ class B2b_response_mailController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'id' => 'required|string',
-            'created_at' => 'required|string',
-            'threadId' => 'required|string',
-            'snippet' => 'required|string',
-            'payload' => 'required|string',
-            'sizeEstimate' => 'required|string',
-            'historyId' => 'required|string',
-            'internalDate' => 'required|string', 
-            'label' => 'required|string', 
-            'To' => 'required|string', 
-            'From' => 'required|string', 
-            'Subject' => 'required|string', 
-            'status_' => 'required|string', 
+            'sujet' => 'required|string',
+            'contenu' => 'required|string',
+            
+            'dateReponse' => 'required|string',
+            'entreprise' => 'required|string', 
+            'email' => 'required|string', 
+            'categorie_entreprise' => 'required|string', 
+            'cat_envoyer' => 'required|string', 
+            'reponse_par_IA' => 'required|string',
+            'thread_id' => 'required|string',
         ]);
 
         if ($validator->fails()) {
@@ -74,7 +71,7 @@ class B2b_response_mailController extends Controller
             'Authorization' => 'Bearer ' . $this->supabaseKey,
             'Content-Type' => 'application/json',
             'Prefer' => 'return=representation',
-        ])->post("{$this->supabaseUrl}/rest/v1/b2b_relancemailsgen", $data);
+        ])->post("{$this->supabaseUrl}/rest/v1/b2b_mailsdereponse_autoprospect", $data);
 
         if ($response->failed()) {
             return response()->json(['error' => $response->body()], 400);
@@ -93,7 +90,6 @@ class B2b_response_mailController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'statut' => 'required|string',
-            'reponse' => 'required|in:true,false,1,0,TRUE,FALSE',
         ]);
 
         if ($validator->fails()) {
@@ -109,7 +105,6 @@ class B2b_response_mailController extends Controller
                     'Prefer'        => 'return=representation',
                 ])->patch("{$this->supabaseUrl}/rest/v1/b2b_mailsreponses?id=eq.{$id}",  [
                     'statut' =>$request->statut,
-                    'reponse' =>$request->reponse,
                 ]);
     
             return response()->json($response->json(), $response->status());
@@ -130,7 +125,7 @@ class B2b_response_mailController extends Controller
             'apikey' => $this->supabaseKey,
             'Authorization' => 'Bearer ' . $this->supabaseKey,
             'Content-Type' => 'application/json',
-        ])->delete("{$this->supabaseUrl}/rest/v1/b2b_relancemailsgen?id=eq.$id");
+        ])->delete("{$this->supabaseUrl}/rest/v1/b2b_mailsdereponse_autoprospect?id=eq.$id");
 
         if ($response->failed()) {
             return response()->json([

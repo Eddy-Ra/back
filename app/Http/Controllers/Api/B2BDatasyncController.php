@@ -24,7 +24,7 @@ class B2BDatasyncController extends Controller
     public function index()
     {
         $allData = [];
-        $limit = 1000;
+        $limit = 800000;
         $offset = 0;
 
         do {

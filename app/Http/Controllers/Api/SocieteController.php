@@ -10,8 +10,8 @@ class SocieteController extends Controller{
 
     public function __construct()
     {
-        $this->supabaseUrl = env('SUPABASE_URL_SOCIETE');
-        $this->supabaseKey = env('SUPABASE_SERVICE_ROLE_KEY8SOCIETE');
+        $this->supabaseUrl = env('SUPABASE_URL');
+        $this->supabaseKey = env('SUPABASE_SERVICE_ROLE_KEY');
     }
     public function index()
     {
