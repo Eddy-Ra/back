@@ -2,6 +2,7 @@
 set -e
 
 PORT="${PORT:-10000}"
+sed -i '1s/^\xEF\xBB\xBF//' /etc/nginx/sites-available/default
 sed -i "s/__PORT__/$PORT/g" /etc/nginx/sites-available/default
 
 php artisan config:cache
