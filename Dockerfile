@@ -1,15 +1,35 @@
-FROM node:21-alpine
+﻿FROM php:8.2-fpm
 
-RUN npm install -g vite
+# --- Dépendances système ---
+RUN apt-get update && apt-get install -y \
+    git curl zip unzip nginx \
+    libpng-dev libonig-dev libxml2-dev libzip-dev sqlite3 libsqlite3-dev \
+    && rm -rf /var/lib/apt/lists/*
 
-WORKDIR /app
+# --- Extensions PHP requises par Laravel ---
+RUN docker-php-ext-install pdo pdo_mysql pdo_sqlite mbstring exif pcntl bcmath gd zip
 
-COPY package.json .
+# --- Composer ---
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-RUN npm install
+WORKDIR /var/www
 
+# --- Copie du code ---
 COPY . .
 
-EXPOSE 5173
+# --- Installation des dependances PHP (production) ---
+RUN composer install --no-dev --optimize-autoloader --no-interaction
 
-CMD ["vite", "--host", "0.0.0.0"]
+# --- Config Nginx et script de demarrage ---
+COPY docker/nginx.conf /etc/nginx/sites-available/default
+COPY docker/start.sh /usr/local/bin/start.sh
+RUN chmod +x /usr/local/bin/start.sh
+
+# --- Permissions Laravel ---
+RUN mkdir -p storage/framework/cache storage/framework/sessions storage/framework/views storage/logs bootstrap/cache \
+    && chown -R www-data:www-data storage bootstrap/cache \
+    && chmod -R 775 storage bootstrap/cache
+
+EXPOSE 10000
+
+CMD ["/usr/local/bin/start.sh"]
