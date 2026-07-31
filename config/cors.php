@@ -10,6 +10,7 @@ return [
         'http://127.0.0.1:8080',  // Ajouté
         'https://autoprospectionadmin.omega-connect.tech',
         'https://www.autoprospectionadmin.omega-connect.tech',
+        'https://autoprospection.vercel.app'
     ],
     'allowed_origins_patterns' => [],
     'allowed_headers' => ['*'],
