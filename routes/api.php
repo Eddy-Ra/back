@@ -34,6 +34,7 @@ use App\Http\Controllers\Api\RelanceMailsgeneresController;
 use App\Http\Controllers\Api\B2b_response_mailController;
 use App\Http\Controllers\Api\b2b_mailsdereponse_autoprospectController;
 use App\Http\Controllers\Api\SocieteController;
+
 // Test/Health
 Route::get('/test', function () {
     return response()->json(['message' => 'API Laravel fonctionne!', 'status' => 'success']);
@@ -45,7 +46,8 @@ Route::get('/health', function () {
 
 // User Auth route
 
-
+// routes/api.php
+Route::post('/login', [UserController::class, 'login']);
 // Categories
 Route::get('/categories', [CategoryController::class, 'index']);
 Route::get('/categories/{id}', [CategoryController::class, 'show']);

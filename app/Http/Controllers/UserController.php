@@ -120,14 +120,12 @@ class UserController extends Controller
                 is_array($createdUser) && isset($createdUser[0]) ? $createdUser[0] : $createdUser,
                 201
             );
-
         } catch (ValidationException $e) {
             Log::error('Erreurs de validation:', $e->errors());
             return response()->json([
                 'message' => 'Validation échouée',
                 'errors'  => $e->errors(),
             ], 422);
-
         } catch (\Exception $e) {
             Log::error('Erreur lors de la création:', [
                 'error' => $e->getMessage(),
@@ -201,8 +199,8 @@ class UserController extends Controller
 
         return response()->json(['verified' => $verified]);
     }
-   // app/Http/Controllers/UserController.php
-   public function updateActiveStatus($id, Request $request)
+    // app/Http/Controllers/UserController.php
+    public function updateActiveStatus($id, Request $request)
     {
         try {
             $response = Http::withoutVerifying()
@@ -214,12 +212,34 @@ class UserController extends Controller
                 ])->patch("{$this->supabaseUrl}/rest/v1/users?id=eq.{$id}", [
                     'is_active' => $request->is_active,
                 ]);
-    
+
             return response()->json($response->json(), $response->status());
-    
         } catch (\Exception $e) {
             return response()->json(['message' => 'Erreur serveur'], 500);
         }
     }
-    
+    // AuthController.php
+    public function login(Request $request)
+    {
+        $validated = $request->validate([
+            'email' => 'required|email',
+            'password' => 'required',
+        ]);
+
+        $user = User::where('email', $validated['email'])->first();
+
+        if (!$user || !Hash::check($validated['password'], $user->password)) {
+            return response()->json(['message' => 'Email ou mot de passe incorrect'], 401);
+        }
+
+        $user->update(['is_active' => true]);
+
+        // Si tu utilises Sanctum pour les tokens :
+        $token = $user->createToken('auth_token')->plainTextToken;
+
+        return response()->json([
+            'user' => $user,
+            'token' => $token,
+        ]);
+    }
 }
