@@ -233,14 +233,12 @@ class UserController extends Controller
                 $hashedPassword = Hash::make($validated['password']);
             }
 
-        $user = User::where('email', $validated['email'])->first();
+        
 
-        if (!Hash::check($validated['password'], $user->password)) {
-            return response()->json(['message' => $hashedPassword], 401);
-        }
+        
 
         return response()->json([
-            'user' => $user,
+            
             'token' => $hashedPassword,
         ]);
     }
