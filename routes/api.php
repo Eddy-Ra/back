@@ -142,6 +142,7 @@ Route::post('/user/{id}/verify-password', [UserController::class, 'verifyPasswor
 Route::post('/user', [UserController::class,'store']);
 Route::patch('/user/{id}', [UserController::class, 'updateActiveStatus']);
 Route::delete('/user/{id}', [UserController::class, 'destroy']);
+Route::patch('/user-pass/{id}', [UserController::class, 'updatePassword']);
 
 
 

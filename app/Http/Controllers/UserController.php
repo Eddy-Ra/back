@@ -218,6 +218,30 @@ class UserController extends Controller
             return response()->json(['message' => 'Erreur serveur'], 500);
         }
     }
+    public function updatePassword($id, Request $request)
+    {
+        $request->validate([
+            'password' => 'required|string|min:4|confirmed',
+        ]);
+
+        try {
+            $hashedPassword = Hash::make($request->password);
+
+            $response = Http::withoutVerifying()
+                ->withHeaders([
+                    'apikey'        => $this->supabaseKey,
+                    'Authorization' => 'Bearer ' . $this->supabaseKey,
+                    'Content-Type'  => 'application/json',
+                    'Prefer'        => 'return=representation',
+                ])->patch("{$this->supabaseUrl}/rest/v1/users?id=eq.{$id}", [
+                    'password' => $hashedPassword,
+                ]);
+
+            return response()->json($response->json(), $response->status());
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Erreur serveur'], 500);
+        }
+    }
     // AuthController.php
     public function login(Request $request)
     {
