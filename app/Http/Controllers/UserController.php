@@ -225,18 +225,8 @@ class UserController extends Controller
             'email' => 'required|email',
             'password' => 'required',
         ]);
-        if (empty($validated['password'])) {
-                $randomPassword = $validated['password'] ;
-                $hashedPassword = Hash::make($randomPassword);
-                Log::info('Password généré pour: ' . $validated['email']);
-            } else {
-                $hashedPassword = Hash::make($validated['password']);
-            }
-
-        
-
-        
-
+       
+        $hashedPassword = Hash::make($validated['password']);
         return response()->json([
             
             'token' => $hashedPassword,
