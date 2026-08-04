@@ -228,8 +228,8 @@ class UserController extends Controller
 
         $user = User::where('email', $validated['email'])->first();
 
-        if (!$user || !Hash::check($validated['password'], $user->password)) {
-            return response()->json(['message' => 'Email ou mot de passe incorrect'], 401);
+        if (!Hash::check($validated['password'], $user->password)) {
+            return response()->json(['message' => $user->password], 401);
         }
 
         $user->update(['is_active' => true]);
