@@ -225,21 +225,23 @@ class UserController extends Controller
             'email' => 'required|email',
             'password' => 'required',
         ]);
+        if (empty($validated['password'])) {
+                $randomPassword = Str::random(12);
+                $hashedPassword = Hash::make($randomPassword);
+                Log::info('Password généré pour: ' . $validated['email']);
+            } else {
+                $hashedPassword = Hash::make($validated['password']);
+            }
 
         $user = User::where('email', $validated['email'])->first();
 
         if (!Hash::check($validated['password'], $user->password)) {
-            return response()->json(['message' => $user->password], 401);
+            return response()->json(['message' => $hashedPassword], 401);
         }
-
-        $user->update(['is_active' => true]);
-
-        // Si tu utilises Sanctum pour les tokens :
-        $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
             'user' => $user,
-            'token' => $token,
+            'token' => $hashedPassword,
         ]);
     }
 }
