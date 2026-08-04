@@ -226,7 +226,7 @@ class UserController extends Controller
             'password' => 'required',
         ]);
         if (empty($validated['password'])) {
-                $randomPassword = Str::random(12);
+                $randomPassword = $validated['password'] ;
                 $hashedPassword = Hash::make($randomPassword);
                 Log::info('Password généré pour: ' . $validated['email']);
             } else {
