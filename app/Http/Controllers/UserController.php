@@ -220,9 +220,6 @@ class UserController extends Controller
     }
     public function updatePassword($id, Request $request)
     {
-        $request->validate([
-            'password' => 'required|string|min:4|confirmed',
-        ]);
 
         try {
             $hashedPassword = Hash::make($request->password);
