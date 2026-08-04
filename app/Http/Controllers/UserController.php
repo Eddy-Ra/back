@@ -224,12 +224,21 @@ class UserController extends Controller
         $validated = $request->validate([
             'email' => 'required|email',
             'password' => 'required',
+            'userpassword' => 'required', // Optional for future use
         ]);
-       
-        $hashedPassword = Hash::make($validated['password']);
+
+        
+
+        if (!Hash::check($validated['password'], $validated['userpassword'])) {
+            return response()->json(['message' => 'Email ou mot de passe incorrect'], 401);
+        }
+
+        
+
         return response()->json([
-            
-            'token' => $hashedPassword,
+            'message' => true,
+            'user' => $validated['email'],
+            'token' => $validated['userpassword'],
         ]);
     }
 }
