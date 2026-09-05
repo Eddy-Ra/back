@@ -178,10 +178,7 @@ class UserController extends Controller
     {
         Log::info('Suppression de l\'utilisateur:', ['id' => $user->id]);
 
-        if ($user->role === 'Admin') {
-            Log::warning('Tentative de suppression d\'un administrateur:', ['id' => $user->id]);
-            return response()->json(['error' => 'Cannot delete admin user'], 403);
-        }
+        
 
         $user->delete();
         Log::info('Utilisateur supprimé avec succès:', ['id' => $user->id]);
