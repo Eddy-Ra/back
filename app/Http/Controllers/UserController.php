@@ -178,14 +178,14 @@ class UserController extends Controller
     {
         Log::info('Suppression de l\'utilisateur:', ['id' => $user->id]);
 
-        
-
         $user->delete();
+
         Log::info('Utilisateur supprimé avec succès:', ['id' => $user->id]);
 
-       return response()->json(['message' => 'User deleted successfully'], 200);
-       
-}
+        return response()->json([
+            'message' => 'User deleted successfully'
+        ], 200);
+    }
 
     public function verifyPassword(Request $request, User $user)
     {
@@ -246,13 +246,13 @@ class UserController extends Controller
             'userpassword' => 'required', // Optional for future use
         ]);
 
-        
+
 
         if (!Hash::check($validated['password'], $validated['userpassword'])) {
             return response()->json(['message' => 'Email ou mot de passe incorrect'], 401);
         }
 
-        
+
 
         return response()->json([
             'message' => true,
