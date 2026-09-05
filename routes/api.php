@@ -143,6 +143,7 @@ Route::post('/user', [UserController::class,'store']);
 Route::patch('/user/{id}', [UserController::class, 'updateActiveStatus']);
 Route::delete('/user/{id}', [UserController::class, 'destroy']);
 Route::patch('/user-pass/{id}', [UserController::class, 'updatePassword']);
+Route::patch('/user/update-role/{id}', [UserController::class, 'updateRole']);
 
 
 

@@ -174,36 +174,19 @@ class UserController extends Controller
         return response()->json($user);
     }
 
-    public function destroy($id)
+    public function destroy(User $user)
     {
-        Log::info('Suppression de l\'utilisateur:', ['id' => $id]);
+        Log::info('Suppression de l\'utilisateur:', ['id' => $user->id]);
 
-        $response = Http::withoutVerifying()
-            ->withHeaders([
-                'apikey'        => $this->supabaseKey,
-                'Authorization' => 'Bearer ' . $this->supabaseKey,
-                'Prefer'        => 'return=representation',
-            ])->delete("{$this->supabaseUrl}/rest/v1/users", [
-                'id' => "eq.{$id}",
-            ]);
-
-        if ($response->failed()) {
-            Log::error('Erreur Supabase lors de la suppression:', [
-                'status' => $response->status(),
-                'body'   => $response->body(),
-            ]);
-
-            return response()->json([
-                'error'  => 'Erreur lors de la suppression du compte',
-                'detail' => $response->json(),
-            ], $response->status());
+        if ($user->role === 'Admin') {
+            Log::warning('Tentative de suppression d\'un administrateur:', ['id' => $user->id]);
+            return response()->json(['error' => 'Cannot delete admin user'], 403);
         }
 
-        Log::info('Utilisateur supprimé avec succès:', ['id' => $id]);
+        $user->delete();
+        Log::info('Utilisateur supprimé avec succès:', ['id' => $user->id]);
 
-        return response()->json([
-            'message' => 'User deleted successfully'
-        ], 200);
+        return response()->json(['message' => 'User deleted successfully'], 204);
     }
 
     public function verifyPassword(Request $request, User $user)
@@ -265,18 +248,36 @@ class UserController extends Controller
             'userpassword' => 'required', // Optional for future use
         ]);
 
-
+        
 
         if (!Hash::check($validated['password'], $validated['userpassword'])) {
             return response()->json(['message' => 'Email ou mot de passe incorrect'], 401);
         }
 
-
+        
 
         return response()->json([
             'message' => true,
             'user' => $validated['email'],
             'token' => $validated['userpassword'],
         ]);
+    }
+    function updateRole($id, Request $request)
+    {
+        try {
+            $response = Http::withoutVerifying()
+                ->withHeaders([
+                    'apikey'        => $this->supabaseKey,
+                    'Authorization' => 'Bearer ' . $this->supabaseKey,
+                    'Content-Type'  => 'application/json',
+                    'Prefer'        => 'return=representation',
+                ])->patch("{$this->supabaseUrl}/rest/v1/users?id=eq.{$id}", [
+                    'role' => $request->role,
+                ]);
+
+            return response()->json($response->json(), $response->status());
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Erreur serveur'], 500);
+        }
     }
 }
