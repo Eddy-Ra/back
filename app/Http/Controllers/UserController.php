@@ -174,13 +174,32 @@ class UserController extends Controller
         return response()->json($user);
     }
 
-    public function destroy(User $user)
+    public function destroy($id)
     {
-        Log::info('Suppression de l\'utilisateur:', ['id' => $user->id]);
+        Log::info('Suppression de l\'utilisateur:', ['id' => $id]);
 
-        $user->delete();
+        $response = Http::withoutVerifying()
+            ->withHeaders([
+                'apikey'        => $this->supabaseKey,
+                'Authorization' => 'Bearer ' . $this->supabaseKey,
+                'Prefer'        => 'return=representation',
+            ])->delete("{$this->supabaseUrl}/rest/v1/users", [
+                'id' => "eq.{$id}",
+            ]);
 
-        Log::info('Utilisateur supprimé avec succès:', ['id' => $user->id]);
+        if ($response->failed()) {
+            Log::error('Erreur Supabase lors de la suppression:', [
+                'status' => $response->status(),
+                'body'   => $response->body(),
+            ]);
+
+            return response()->json([
+                'error'  => 'Erreur lors de la suppression du compte',
+                'detail' => $response->json(),
+            ], $response->status());
+        }
+
+        Log::info('Utilisateur supprimé avec succès:', ['id' => $id]);
 
         return response()->json([
             'message' => 'User deleted successfully'
