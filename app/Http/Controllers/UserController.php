@@ -183,8 +183,9 @@ class UserController extends Controller
         $user->delete();
         Log::info('Utilisateur supprimé avec succès:', ['id' => $user->id]);
 
-        return response()->json(['message' => 'User deleted successfully'], 204);
-    }
+       return response()->json(['message' => 'User deleted successfully'], 200);
+       
+}
 
     public function verifyPassword(Request $request, User $user)
     {
